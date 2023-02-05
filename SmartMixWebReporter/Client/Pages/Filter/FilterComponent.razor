@@ -1,0 +1,10 @@
+﻿@inherits FilterViewModel
+@inject FilterData Filter;
+
+<MudGrid Style="border: .2px solid #E1E1E1; padding: 1%; border-radius: 8px; display: flex; position: relative; background: #FFF; margin-bottom: 20px;">
+    <MudStack Row="true">
+        <MudDatePicker Variant="Variant.Outlined" @bind-Date="Filter.StartTime"></MudDatePicker>
+        <MudDatePicker Variant="Variant.Outlined" @bind-Date="Filter.EndTime"></MudDatePicker>
+        <MudButton OnClick="OnAccept">Применить</MudButton>
+    </MudStack>
+</MudGrid>

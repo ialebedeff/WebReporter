@@ -1,0 +1,13 @@
+﻿@inherits MudComponentBase;
+
+@if (IsLoading)
+{
+    <MudStack AlignItems="AlignItems.Center">
+        <MudText>@Text</MudText>
+        <MudProgressCircular Indeterminate="true"></MudProgressCircular>
+    </MudStack>
+}
+@code {
+    [Parameter] public string Text { get; set; } = "Загрузка";
+    [Parameter] public bool IsLoading { get; set; }
+}

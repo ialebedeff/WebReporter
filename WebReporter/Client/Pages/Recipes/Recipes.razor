@@ -1,0 +1,48 @@
+﻿@page "/recipes";
+@inherits ComponentBase;
+
+@using ChartJs.Blazor.BarChart;
+@using CommunicationMessageQueueManager;
+@using CommunicationService;
+@using Entities;
+@using WebReporter.Client.Rpc;
+
+<div class="scrolling-wrapper">
+    <div class="chart chart-body">
+        <canvas height="350" width="900" class="chart" id="ordered-volume-chart"></canvas>
+    </div>
+</div>
+@code {
+    [Inject] public SignalClient SignalClient { get; set; } = null!;
+    [Inject] public RequestManager RequestManager { get; set; } = null!;
+    [Inject] public DatabaseConnectionInfo Database { get; set; } = null!;
+    [Inject] public IJSRuntime JSRuntime { get; set; } = null!;
+
+    public IEnumerable<Application>? Applications { get; set; }
+    public IEnumerable<Recipe>? UsedRecipes { get; set; }
+
+    public ChartJS ChartJS { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ChartJS = new ChartJS(JSRuntime);
+
+        await SignalClient.StartAsync();
+
+        Applications = await RequestManager.Database.Applications.GetApplicationsAsync(0, 200, Database);
+        UsedRecipes = (await RequestManager.Database.Recipes
+            .GetRecipesAsync(Applications
+            .Select(application => application.RecipeId)
+            .Distinct(), Database))
+            .DistinctBy(recipe => recipe.OldId);
+
+        await ChartJS.OrderedVolumeChart(
+            Applications.Select(application => application.Volume),
+            Applications.Select(application => application.VolumeCurrent),
+            Applications.Select(application => application.EndTime.ToString()),
+            UsedRecipes.Select(recipe => recipe.Name)
+        );
+
+        await InvokeAsync(StateHasChanged);
+    }
+}

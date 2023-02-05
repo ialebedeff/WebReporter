@@ -1,0 +1,78 @@
+﻿@using Entities;
+@using SmartMixWebReporter.Client.Pages.Consumption.ViewModels.Bunker;
+@using SmartMixWebReporter.Client.Pages.Filter
+@using SmartMixWebReporter.Client.Pages.Loading
+
+@inherits BunkerConsumptionViewModel
+@page "/expenditures-by-bunker";
+@inject Entities.FilterData Filter;
+
+<MudStack>
+    <FilterComponent OnAccept="ReloadDataAsync"></FilterComponent>
+
+    <MudGrid Style="border: .2px solid #E1E1E1; padding: 2%; border-radius: 8px; display: flex; position: relative; background: #FFF">
+
+        <Loading IsLoading="IsLoading"></Loading>
+
+        @if (!IsLoading)
+        {
+            <MudStack Row="true" AlignItems="AlignItems.Start">
+                <MudStack AlignItems="AlignItems.Start">
+
+                    @if (Sensors is not null)
+                    {
+                        <MudSelect Margin="Margin.Dense" T="int?" @bind-Value="SelectedSensor" SelectedValuesChanged="ReloadDataAsync" Label="Бункер" Variant="Variant.Outlined">
+                            @foreach (var sensor in Sensors)
+                            {
+                                <MudSelectItem Value="sensor">
+                                    @($"Силос {sensor}")
+                                </MudSelectItem>
+                            }
+                        </MudSelect>
+                    }
+
+
+                    @if (Expenditures is not null)
+                    {
+                        <MudTable T="BunkerExpenditure" Items="Expenditures" Virtualize="true" Dense="true" Hover="true" Elevation="0" RowsPerPage="10">
+                            <HeaderContent>
+                                <MudTh>Дата</MudTh>
+                                <MudTh>Тип</MudTh>
+                                <MudTh>Расход</MudTh>
+                                <MudTh>Загрузка</MudTh>
+                                <MudTh>Остаток</MudTh>
+                                <MudTh>Сенсор</MudTh>
+                                <MudTh>Замес</MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd DataLabel="Дата">@context.Date</MudTd>
+                                <MudTd DataLabel="Тип">
+                                    @(
+                                        context.Type == BunkerLevelType.Loading ? "Загрузка" : "Расход"
+                                        )
+                                </MudTd>
+                                <MudTd DataLabel="Расход">@context.Expenditures</MudTd>
+                                <MudTd DataLabel="Загрузка">@context.Load</MudTd>
+                                <MudTd DataLabel="Остаток">@context.Remains</MudTd>
+                                <MudTd DataLabel="Сенсор">@context.SensorNumber</MudTd>
+                                <MudTd DataLabel="Замес">@context.BatchId</MudTd>
+                            </RowTemplate>
+                            <PagerContent>
+                                <MudTablePager></MudTablePager>
+                            </PagerContent>
+
+                        </MudTable>
+                    }
+
+                </MudStack>
+
+               @* <MudGrid Style="width: 150%;">
+                    <Chart Config="BarConfig"></Chart>
+                </MudGrid>*@
+
+                @*<MudChart ChartType="MudBlazor.ChartType.Line" ChartSeries="@Series"  Width="100%" Height="350px"></MudChart>*@
+                <Blazorise.Charts.BarChart @ref="_barChart"  TItem="float"></Blazorise.Charts.BarChart>
+            </MudStack>
+        }
+    </MudGrid>
+</MudStack>

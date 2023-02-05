@@ -1,0 +1,35 @@
+﻿@using SmartMixWebReporter.Client.Pages.Charts.ViewModels;
+@using SmartMixWebReporter.Client.Pages.Filter
+@using SmartMixWebReporter.Client.Pages.Loading
+
+@page "/charts";
+@inherits ChartViewModel
+
+<MudStack>
+    <FilterComponent OnAccept="ReloadDataAsync"></FilterComponent>
+    <MudGrid Style="border: .2px solid #E1E1E1; padding: 2%; border-radius: 8px; display: flex; position: relative; background: #FFF">
+
+        @if (!IsLoading)
+        {
+            @if (ChartData.Series is not null &&
+                 ChartData.Labels is not null &&
+                 Applications is not null)
+                {
+                    <MudStack Style="margin: 0 auto;" AlignItems="AlignItems.Center">
+                        <MudText>
+                            @($"Общий заказанный объём: {Applications.Select(app => app.Volume).Sum()}, Общий выполненный объём: {Applications.Select(app => app.VolumeCurrent).Sum()}")
+                        </MudText>
+                        <MudChart ChartType="MudBlazor.ChartType.Bar"
+                                  ChartSeries="@ChartData.Series"
+                                  ChartOptions="@(new ChartOptions(){InterpolationOption = InterpolationOption.Straight})"
+                                  XAxisLabels="@ChartData.Labels"
+                                  Width="100%"
+                                  Height="350px"
+                                  Style="margin: 0 auto;">
+                        </MudChart>
+                    </MudStack>
+                }
+
+        }
+    </MudGrid>
+</MudStack>

@@ -1,0 +1,87 @@
+﻿@using Entities;
+@using SmartMixWebReporter.Client.Pages.Applications.ViewModels;
+@using SmartMixWebReporter.Client.Pages.Filter
+@using SmartMixWebReporter.Client.Pages.Loading
+
+@page "/";
+@page "/applications";
+
+@inherits ApplicationsViewModel
+
+
+<MudStack>
+    <FilterComponent @bind-EndTime="FilterData.EndTime" @bind-StartTime="FilterData.EndTime" OnAccept="(async () => await ReloadDataAsync())"></FilterComponent>
+    <MudGrid Style="border: .2px solid #E1E1E1; padding: 2%; border-radius: 8px; display: flex; position: relative; background: #FFF">
+        <Loading IsLoading="IsLoading"></Loading>
+
+        @if (!IsLoading)
+        {
+            <MudStack Style="margin: 0 auto;" AlignItems="AlignItems.Center">
+                <MudTable T="Application" Items="Applications" Dense="true" Hover="true" Elevation="0" RowsPerPage="10">
+                    <HeaderContent>
+                        <MudTh>Номер заявки</MudTh>
+                        <MudTh>Накладная</MudTh>
+                        <MudTh>Текущий объём</MudTh>
+                        <MudTh>Фактический объём</MudTh>
+                        <MudTh>Замес</MudTh>
+                        <MudTh>Время создания заявки</MudTh>
+                        <MudTh>Время начала заявки</MudTh>
+                        <MudTh>Время окончания заявки</MudTh>
+                        <MudTh>Выполнена</MudTh>
+                        <MudTh>В работе</MudTh>
+                        <MudTh>В режиме тренажёра</MudTh>
+                        <MudTh>Номер смесителя</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Номер заявки">@context.Id</MudTd>
+                        <MudTd DataLabel="Накладная">@context.Invoice</MudTd>
+                        <MudTd DataLabel="Текущий объём">@context.VolumeCurrent</MudTd>
+                        <MudTd DataLabel="Фактический объём">@context.VolumeFact</MudTd>
+                        <MudTd DataLabel="Замес">@context.BatchPhase</MudTd>
+
+                        <MudTd DataLabel="Время создания заявки">@context.ApplicationCreateTime</MudTd>
+                        <MudTd DataLabel="Время начала заявки">@context.StartTime</MudTd>
+                        <MudTd DataLabel="Время окончания заявки">@context.EndTime</MudTd>
+
+                        <MudTd DataLabel="Выполнена">
+                            @if (context.IsCompleted)
+                            {
+                                <MudIcon Color="MudBlazor.Color.Success" Icon="@Icons.Material.Filled.Check"></MudIcon>
+                            }
+                            else
+                            {
+                                <MudIcon Color="MudBlazor.Color.Error" Icon="@Icons.Material.Filled.Close"></MudIcon>
+                            }
+                        </MudTd>
+                        <MudTd DataLabel="В работе">
+                            @if (context.IsRunning)
+                            {
+                                <MudIcon Color="MudBlazor.Color.Success" Icon="@Icons.Material.Filled.Check"></MudIcon>
+                            }
+                            else
+                            {
+                                <MudIcon Color="MudBlazor.Color.Error" Icon="@Icons.Material.Filled.Close"></MudIcon>
+                            }
+                        </MudTd>
+                        <MudTd DataLabel="В режиме тренажёра">
+                            @if (context.IsTrainMode)
+                            {
+                                <MudIcon Color="MudBlazor.Color.Success" Icon="@Icons.Material.Filled.Check"></MudIcon>
+                            }
+                            else
+                            {
+                                <MudIcon Color="MudBlazor.Color.Error" Icon="@Icons.Material.Filled.Close"></MudIcon>
+                            }
+                        </MudTd>
+                        <MudTd DataLabel="Номер смесителя">
+                            @context.MixerNumber
+                        </MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager></MudTablePager>
+                    </PagerContent>
+                </MudTable>
+            </MudStack>
+        }
+    </MudGrid>
+</MudStack>

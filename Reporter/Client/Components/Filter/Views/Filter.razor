@@ -1,0 +1,130 @@
+﻿@using Entities;
+@using MudBlazor
+@using WebReporter.Client.Components.Filter.ViewModels;
+
+@inherits FilterViewModel
+
+@if (Filter is not null)
+{
+    <MudStack>
+        <MudStack Class="flex-wrap" Row="true">
+            @if (Options.IsApplicationNumberEnabled)
+            {
+                <MudTextField Variant="Variant.Outlined" Label="№ заявки" T="int?" @bind-Value="Filter.ApplicationNumber"></MudTextField>
+            }
+            @if (Options.IsInvoiceEnabled)
+            {
+                <MudTextField Variant="Variant.Outlined" Label="№ накладной" T="string" @bind-Value="Filter.Invoice"></MudTextField>
+            }
+            @if (Options.IsMixerNumberEnabled)
+            {
+                <MudTextField Variant="Variant.Outlined" Label="№ смесителя" T="int?" @bind-Value="Filter.MixerNumber"></MudTextField>
+            }
+            @if (Options.IsDateEnabled)
+            {
+                <MudDatePicker Style="min-width: 130px;" Variant="Variant.Outlined" Label="Дата начала" @bind-Date="Filter.StartTime" />
+                <MudDatePicker Style="min-width: 130px;" Variant="Variant.Outlined" Label="Дата окончания" @bind-Date="Filter.EndTime" />
+            }
+
+            @if (ApplicationData.Clients is not null && Options.IsClientEnabled)
+            {
+                <MudSelect Style="min-width: 130px;" Variant="Variant.Outlined" T="Client" Label="Клиент" Clearable="true" OnClearButtonClick="@(() => Filter.SelectedClient = null)" SelectedValuesChanged="@(clients => Filter.SelectedClient = clients.FirstOrDefault())" Placeholder="Клиент" AnchorOrigin="Origin.BottomCenter">
+                    @foreach (var client in ApplicationData.Clients)
+                    {
+                        <MudSelectItem T="Client" Value="client">
+                            @client.Name
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+            }
+            else if (ApplicationData.Clients is null && Options.IsClientEnabled)
+            {
+                <MudSkeleton Height="65px" Width="130px" />
+            }
+
+            @if (ApplicationData.Recipes is not null && Options.IsRecipeSelectorEnabled)
+            {
+                <MudSelect Style="min-width: 130px;" Variant="Variant.Outlined" T="Recipe" Label="Рецепт" Clearable="true" OnClearButtonClick="@(() => Filter.SelectedClient = null)" SelectedValuesChanged="@(recipes => Filter.SelectedRecipe = recipes.FirstOrDefault())" Placeholder="Рецепт" AnchorOrigin="Origin.BottomCenter">
+                    @foreach (var recipe in ApplicationData.Recipes)
+                    {
+                        <MudSelectItem T="Recipe" Value="recipe">
+                            @recipe.Name
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+            }
+            else if (ApplicationData.Recipes is null && Options.IsRecipeSelectorEnabled)
+            {
+                <MudSkeleton Height="65px" Width="130px" />
+            }
+
+            @if (ApplicationData.Cars is not null && Options.IsCarEnabled)
+            {
+                <MudSelect Style="min-width: 130px;" Variant="Variant.Outlined" T="Car" Label="Машина" Clearable="true" OnClearButtonClick="@(() => Filter.SelectedCar = null)" SelectedValuesChanged="@(cars => Filter.SelectedCar = cars.FirstOrDefault())" Placeholder="Машина" AnchorOrigin="Origin.BottomCenter">
+                    @foreach (var car in ApplicationData.Cars)
+                    {
+                        <MudSelectItem T="Car" Value="car">
+                            @car.Number
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+            }
+            else if (ApplicationData.Cars is null && Options.IsCarEnabled)
+            {
+                <MudSkeleton Height="65px" Width="130px" />
+            }
+
+            @if (ApplicationData.Sensors is not null && Options.IsBunkerEnabled)
+            {@*SelectedValuesChanged="@(sensors => Filter.SelectedSensor = sensors.FirstOrDefault())"*@
+                <MudSelect Style="min-width: 130px;" Variant="Variant.Outlined" T="int?" Label="Сенсор" Clearable="true" @bind-Value="Filter.SelectedSensor" OnClearButtonClick="@(() => Filter.SelectedSensor = null)"  Placeholder="Сенсор" AnchorOrigin="Origin.BottomCenter">
+                    @foreach (var sensor in ApplicationData.Sensors)
+                    {
+                        <MudSelectItem T="int?" Value="sensor">
+                            @($"Сенсор: {sensor}")
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+            }
+            else if (ApplicationData.Sensors is null && Options.IsBunkerEnabled)
+            {
+                <MudSkeleton Height="65px" Width="130px" />
+            }
+
+            @if (ApplicationData.Recipes is not null && Options.IsRecipeEnabled)
+            {
+                <MudAutocomplete Style="min-width: 130px;" Variant="Variant.Outlined" T="string" Label="Рецепт" SearchFunc="@SearchByRecipesAsync"
+                         ResetValueOnEmptyText="true"
+                         ValueChanged="@(async (e) => await LoadRecipesByNameAsync(e))"
+                         CoerceText="true" CoerceValue="true"
+                         AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" />
+            }
+            else if (ApplicationData.Recipes is null && Options.IsRecipeEnabled)
+            {
+                <MudSkeleton Height="65px" Width="130px" />
+            }
+        </MudStack>
+
+        <MudStack Class="flex-wrap" AlignItems="AlignItems.End">
+            <MudStack Row="true" Class="flex-wrap">
+                @if (Options.IsTrainModeEnabled)
+                {
+                    <MudCheckBox Label="Тренажёр" @bind-Checked="Filter.IsTrainMode" Color="Color.Primary"></MudCheckBox>
+                }
+                @if (Options.IsManualEnabled)
+                {
+                    <MudCheckBox Label="Исключить ручные заявки" @bind-Checked="Filter.IsManual" Color="Color.Primary"></MudCheckBox>
+                }
+                @if (Options.IsCompletedAppEnabled)
+                {
+                    <MudCheckBox Label="Только завершённые заявки" @bind-Checked="Filter.IsCompleted" Color="Color.Primary"></MudCheckBox>
+                }
+                @if (Options.IsSpeedAppEnabled)
+                {
+                    <MudCheckBox Label="Только быстрые заявки" @bind-Checked="Filter.IsSpeedApp" Color="Color.Primary"></MudCheckBox>
+                }
+                <MudButton FullWidth="false" Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="ReloadData">Применить</MudButton>
+            </MudStack>
+
+        </MudStack>
+    </MudStack>
+}

@@ -1,0 +1,73 @@
+﻿@using Entities;
+@using Reporter.Client.Components.Filter.Views
+@using Reporter.Client.Pages.Consumption.Recipe.ViewModels;
+@using WebReporter.Client.Components.Filter.ViewModels;
+
+@page "/consumption/recipe";
+@inherits ConsumptionByRecipeViewModel;
+
+<MudStack AlignItems="AlignItems.Center">
+    <Filter ReloadData="ReloadApplicationAsync" Options="new DefaultFilterOptions()" Filter="Filter"></Filter>
+
+    @if (ApplicationData.RecipeExpenditures is null ||
+    ApplicationData.RecipeExpenditures.Count() == 0)
+    {
+        <MudText Typo="Typo.h3">\_(ツ)_/¯</MudText>
+        <MudText Typo="Typo.h3">Нет данных для отображения</MudText>
+    }
+    else
+    {
+
+        <MudGrid Style="padding: 20px; border: 1px solid #EFEFEF; margin-bottom: 20px; border-radius: 5px; cursor: pointer;">
+            <div style="width: 100%; max-height: 600px;">
+                <canvas class="chart" height="350" width="900" id="ordered-volume-chart"></canvas>
+            </div>
+            <MudTable Style="width: 100%;" Height="400px" LoadingProgressColor="Color.Secondary" @ref="RecipeExpenditureTable" Context="context" Elevation="0" T="RecipeExpenditure" Hover="true" RowsPerPage="10" Virtualize="true" Bordered="false" ServerData="ReloadRecipeExpenditures">
+                <HeaderContent>
+                    <MudTh>Рецепт</MudTh>
+                    <MudTh>Объём</MudTh>
+                    <MudTh>Объём по факту</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Рецепт">@(context.RecipeName ?? "Не выбран")</MudTd>
+                        <MudTd DataLabel="Объём">@context.Volume</MudTd>
+                        <MudTd DataLabel="Объём по факту">@(context.VolumeFact)</MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager />
+                    </PagerContent>
+                </MudTable>
+            </MudGrid>
+
+        @* <MudTable Height="400px" LoadingProgressColor="Color.Secondary" Style="padding: 20px; border: 1px solid #EFEFEF; margin-bottom: 20px; cursor: pointer;" @ref="ApplicationTable" Context="context" Elevation="0" T="Entities.Application" Hover="true" RowsPerPage="10" Virtualize="true" Bordered="false" ServerData="ReloadApplications">
+    <HeaderContent>
+    <MudTh>Номер заявки</MudTh>
+    <MudTh>Заказчик</MudTh>
+    <MudTh>Рецепт</MudTh>
+    <MudTh>Машина</MudTh>
+    <MudTh>Объём заказ.</MudTh>
+    <MudTh>Объём выполн.</MudTh>
+    <MudTh>Объём время смеш.</MudTh>
+    <MudTh>Начат</MudTh>
+    <MudTh>Завершён</MudTh>
+    <MudTh>Оператор</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+    <MudTd DataLabel="Номер заявки">@context.Id</MudTd>
+    <MudTd DataLabel="Заказчик">@(context.Client?.Name ?? "Не выбран")</MudTd>
+    <MudTd DataLabel="Рецепт">@(context.RecipeName ?? "Не выбран")</MudTd>
+    <MudTd DataLabel="Машина">@(context.Car?.Number ?? "Не выбран")</MudTd>
+    <MudTd DataLabel="Объём заказ">@context.Volume</MudTd>
+    <MudTd DataLabel="Объём выполн">@context.VolumeCurrent</MudTd>
+    <MudTd DataLabel="Время смеш">@(context.EndTime - context.StartTime)</MudTd>
+    <MudTd DataLabel="Начат">@(context.StartTime)</MudTd>
+    <MudTd DataLabel="Завершён">@(context.EndTime)</MudTd>
+    <MudTd DataLabel="Оператор">@(context.CreatorName)</MudTd>
+    </RowTemplate>
+    <PagerContent>
+    <MudTablePager />
+    </PagerContent>
+    </MudTable>*@
+
+    }
+</MudStack>

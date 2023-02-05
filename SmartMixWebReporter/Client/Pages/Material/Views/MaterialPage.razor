@@ -1,0 +1,44 @@
+﻿@using Entities;
+
+@using SmartMixWebReporter.Client.Pages.Filter
+@using SmartMixWebReporter.Client.Pages.Loading
+@using SmartMixWebReporter.Client.Pages.Material.ViewModels;
+
+@page "/material";
+
+@inherits MaterialConsumptionViewModel
+
+<MudStack>
+    <MudGrid Style="border: .2px solid #E1E1E1; padding: 2%; border-radius: 8px; display: flex; position: relative; background: #FFF">
+
+        <FilterComponent OnAccept="ReloadDataAsync"></FilterComponent>
+
+        <MudStack Style="margin: 0 auto;" AlignItems="AlignItems.Center">
+            <MudTable Dense="true" T="ComponentViewModel" Items="Components" Hover="true" Elevation="0" RowsPerPage="10">
+                <HeaderContent>
+
+                    <MudTh>Компонент</MudTh>
+                    <MudTh>Ручной</MudTh>
+                    <MudTh>Автоматический</MudTh>
+                    <MudTh>Коррекция</MudTh>
+
+                </HeaderContent>
+                <RowTemplate>
+
+                    <MudTd>@context.Component.Name</MudTd>
+                    <MudTd>@context.BatchMats.Sum(batch => batch.MassManual)</MudTd>
+                    <MudTd>@context.BatchMats.Sum(batch => batch.MassAuto)</MudTd>
+                    <MudTd>@context.BatchMats.Sum(batch => batch.MassCorrection)</MudTd>
+
+                </RowTemplate>
+
+                <PagerContent>
+                    <MudTablePager></MudTablePager>
+                </PagerContent>
+
+            </MudTable>
+
+            <MudChart ChartType="MudBlazor.ChartType.Bar" ChartSeries="Series"></MudChart>
+        </MudStack>
+    </MudGrid>
+</MudStack>

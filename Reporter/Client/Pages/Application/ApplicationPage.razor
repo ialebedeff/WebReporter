@@ -1,0 +1,43 @@
+﻿@using MudBlazor
+@using Reporter.Client.Components.Filter.Views
+@using WebReporter.Client.Components.Filter.ViewModels;
+
+@page "/";
+@page "/applications"
+
+@inherits ApplicationViewModel;
+@layout MainLayout;
+
+<MudStack>
+    <Filter Options="new ApplicationFilterOptions()" Filter="Filter" ReloadData="ReloadApplicationAsync"></Filter>
+    <MudText>@($"Найдено: {ResultsCount} заявок")</MudText>
+        <MudTable OnRowClick="@(row => OpenApplicationInfoDialogAsync(row.Item))" LoadingProgressColor="Color.Secondary" Style="padding: 20px; border: 1px solid #EFEFEF; margin-bottom: 20px; cursor: pointer;" @ref="Table" Context="context" Elevation="0" Items="@Applications" T="Entities.Application" Hover="true" RowsPerPage="10" Virtualize="true" Bordered="false" ServerData="ReloadApplications">
+        <HeaderContent>
+            <MudTh>Номер заявки</MudTh>
+            <MudTh>Заказчик</MudTh>
+            <MudTh>Рецепт</MudTh>
+            <MudTh>Машина</MudTh>
+            <MudTh>Объём заказ.</MudTh>
+            <MudTh>Объём выполн.</MudTh>
+            <MudTh>Объём время смеш.</MudTh>
+            <MudTh>Начат</MudTh>
+            <MudTh>Завершён</MudTh>
+            <MudTh>Оператор</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Номер заявки">@context.Id</MudTd>
+                <MudTd DataLabel="Заказчик">@(context.Client?.Name ?? "Не выбран")</MudTd>
+                <MudTd DataLabel="Рецепт">@(context.RecipeName ?? "Не выбран")</MudTd>
+                <MudTd DataLabel="Машина">@(context.Car?.Number ?? "Не выбран")</MudTd>
+                <MudTd DataLabel="Объём заказ">@context.Volume</MudTd>
+                <MudTd DataLabel="Объём выполн">@context.VolumeCurrent</MudTd>
+                <MudTd DataLabel="Время смеш">@(context.EndTime - context.StartTime)</MudTd>
+                <MudTd DataLabel="Начат">@(context.StartTime)</MudTd>
+                <MudTd DataLabel="Завершён">@(context.EndTime)</MudTd>
+                <MudTd DataLabel="Оператор">@(context.CreatorName)</MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+    </MudStack>

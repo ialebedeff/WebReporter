@@ -1,0 +1,15 @@
+﻿@using Reporter.Client.Components.Filter.Views
+@using Reporter.Client.Pages.Charts.OrderedVolume.ViewModels;
+@using WebReporter.Client.Components.Filter.ViewModels;
+
+@inherits OrderedVolumeViewModel;
+@page "/charts/ordered-volume";
+
+<MudStack>
+    <Filter Options="new DefaultFilterOptions() {IsBunkerEnabled = false }" Filter="Filter" ReloadData="LoadApplicationAsync"></Filter>
+
+    <div style="width: 100%; max-height: 900px; padding: 20px; border: 1px solid #EFEFEF; margin-bottom: 20px; border-radius: 5px; cursor: pointer;">
+        <canvas class="chart" height="350" width="900" id="ordered-volume-chart"></canvas>
+    </div>
+
+</MudStack>

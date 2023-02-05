@@ -1,0 +1,31 @@
+﻿@using CommunicationService;
+@using SmartMixWebReporter.Client.Pages.Applications.Views;
+@using SmartMixWebReporter.Client.Pages.Charts.Views;
+@using SmartMixWebReporter.Client.Pages.Consumption.Views.Bunker;
+@using SmartMixWebReporter.Client.Pages.Report.ViewModels;
+
+@inherits LayoutComponentBase
+@inject NavigationManager Navigation;
+@inject SignalClient Client;
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar>
+        <MudButtonGroup Color="MudBlazor.Color.Secondary" Variant="Variant.Text">
+            <MudButton OnClick="@(async () => Navigation.NavigateTo("/applications", false))">Заявки</MudButton>
+            <MudButton OnClick="@(async () => Navigation.NavigateTo("/charts", false))">Диаграммы</MudButton>
+            <MudButton OnClick="@(async () => Navigation.NavigateTo("/expenditures-by-bunker", false))">Расход по бункеру</MudButton>
+            <MudButton OnClick="@(async () => Navigation.NavigateTo("/recipes", false))">Рецепт</MudButton>
+            <MudButton OnClick="@(async () => Navigation.NavigateTo("/material", false))">Материал</MudButton>
+        </MudButtonGroup>
+    </MudAppBar>
+
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Style="padding-top: 2%;">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>

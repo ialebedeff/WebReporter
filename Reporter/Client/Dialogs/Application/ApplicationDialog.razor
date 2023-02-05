@@ -1,0 +1,65 @@
+﻿@using Entities;
+@inherits ApplicationDialogViewModel;
+
+<MudDialog>
+    <DialogContent>
+        @if (Batches is not null)
+        {
+            <MudTable Elevation="0" T="Batch" Items="Batches">
+                <HeaderContent>
+                    <MudTh>Замес</MudTh>
+                    <MudTh>Объём замеса</MudTh>
+                    <MudTh>Объём замеса факт</MudTh>
+                    <MudTh>Температура</MudTh>
+                    <MudTh>Ток смесителя</MudTh>
+                    <MudTh>Время смешивания</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Замес">
+                        <MudChip Style="width: 50px; cursor: pointer;" Variant="Variant.Text" Color="Color.Secondary">@context.Id</MudChip>
+                    </MudTd>
+                    <MudTd DataLabel="Объём замеса">@context.Volume</MudTd>
+                    <MudTd DataLabel="Объём замеса факт">@context.VolumeFact</MudTd>
+                    <MudTd DataLabel="Температура">@context.Temperature</MudTd>
+                    <MudTd DataLabel="Ток смесителя">@context.ActualCurrent</MudTd>
+                    <MudTd DataLabel="Время смешивания">@(context.PureTime) сек</MudTd>
+                </RowTemplate>
+            </MudTable>
+            <MudStack>
+                <MudChipSet @bind-SelectedChip="SelectedChip" Filter="true" Mandatory="true">
+                    <MudStack Style="max-height: 300px; overflow: auto;">
+                        @if (BatchInformations is not null)
+                        {
+                            @foreach (var batch in BatchInformations)
+                            {
+                                <MudChip Value="batch" Variant="Variant.Text" Color="Color.Secondary">Замес: @batch.Batch.Id</MudChip>
+
+                                @if (SelectedChip?.Value is BatchInformationViewModel model && model.Batch.Id == batch.Batch.Id)
+                                {
+                                    <MudTable Elevation="0" T="BatchMat" Items="batch.BatchMats">
+                                        <HeaderContent>
+                                            <MudTh>Компонент</MudTh>
+                                            <MudTh>По рецепту</MudTh>
+                                            <MudTh>По факту</MudTh>
+                                            <MudTh>В ручном</MudTh>
+                                        </HeaderContent>
+                                        <RowTemplate>
+                                            <MudTd>@ApplicationData.Components?.FirstOrDefault(component => component.Id == context.ComponentId)?.Name</MudTd>
+                                            <MudTd>@context.MassAuto</MudTd>
+                                            <MudTd>@context.MassCorrection</MudTd>
+                                            <MudTd>@context.MassManual</MudTd>
+                                        </RowTemplate>
+                                    </MudTable>
+                                }
+                            }
+
+                        }
+                    </MudStack>
+                </MudChipSet>
+            </MudStack>
+        }
+    </DialogContent>
+    <DialogActions>
+
+    </DialogActions>
+</MudDialog>

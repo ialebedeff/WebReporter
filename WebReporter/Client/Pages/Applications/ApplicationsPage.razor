@@ -1,0 +1,44 @@
+﻿@page "/applications";
+@using CommunicationMessageQueueManager;
+@using CommunicationService;
+@using Entities;
+
+@if (Applications is not null)
+{
+    <Table Borderless>
+        <TableHeader>
+            <TableRow>
+                <TableHeaderCell>Номер заявки</TableHeaderCell>
+                <TableHeaderCell>Объём</TableHeaderCell>
+                <TableHeaderCell>Объём выполненный</TableHeaderCell>
+                <TableHeaderCell>Тренажер</TableHeaderCell>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            @foreach (var application in Applications)
+            {
+                <TableRow @key="application.Id">
+                    <TableRowHeader>@application.Id</TableRowHeader>
+                    <TableRowCell>@application.Volume</TableRowCell>
+                    <TableRowCell>@application.VolumeCurrent</TableRowCell>
+                    <TableRowCell>@application.IsTrainMode</TableRowCell>
+                </TableRow>
+            }
+        </TableBody>
+    </Table>
+}
+
+@code {
+    [Inject] public DatabaseConnectionInfo Database { get; set; } = null!;
+    [Inject] public SignalClient SignalClient { get; set; } = null!;
+    [Inject] public RequestManager Manager { get; set; } = null!;
+
+    public IEnumerable<Application>? Applications { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await SignalClient.StartAsync();
+
+        Applications = await Manager.Database.Applications.GetApplicationsAsync(0, 100, Database);
+    }
+}

@@ -1,0 +1,65 @@
+﻿@using CommunicationService;
+@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="mudTheme" @bind-IsDarkMode="_isDarkTheme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Style="backdrop-filter: blur(10px);  -webkit-backdrop-filter: blur(10px); background-color: rgba(255,255,255,.2);" Elevation="0" >
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Primary" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudText Color="Color.Primary">SmartMix отчёты</MudText>
+        <MudIconButton Icon="@Icons.Material.Filled.DarkMode" Color="Color.Primary" OnClick="@(() => _isDarkTheme = !_isDarkTheme)"></MudIconButton>
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_drawerOpen">
+        <MudPaper Width="250px" Class="py-3" Elevation="0">
+            <MudNavMenu Dense="true" Rounded="true" Bordered="false" Margin="Margin.Dense" Color="Color.Secondary" Class="pa-2">
+                <MudNavLink Href="/applications" Icon="@Icons.Material.Filled.Apps">Заявки</MudNavLink>
+                <MudNavGroup Title="Отчёты" Icon="@Icons.Material.Filled.Report" Expanded="true">
+                    <MudNavLink Href="/consumption/bunker">Расход по бункеру</MudNavLink>
+                    <MudNavLink Href="/consumption/recipe">Расход по рецепту</MudNavLink>
+                    <MudNavLink Href="/consumption/material">Расход по материалу</MudNavLink>
+                </MudNavGroup>
+                <MudNavGroup Title="Отчёты" Icon="@Icons.Material.Filled.AreaChart" Expanded="true">
+                    <MudNavLink Href="/charts/ordered-volume">График объёма</MudNavLink>
+                    <MudNavLink Href="/charts/downtime">График простоя</MudNavLink>
+                </MudNavGroup>
+                <MudNavGroup Title="Настройки" Icon="@Icons.Material.Filled.Settings" Expanded="true">
+                    <MudNavLink Href="/consumtion/bunker">Безопасность</MudNavLink>
+                    <MudNavLink Href="/consumtion/recipe">Приложение</MudNavLink>
+                    <MudNavLink Href="/consumtion/material">Плагины</MudNavLink>
+                </MudNavGroup>
+
+                <MudNavLink Href="/about">Руководство пользователя</MudNavLink>
+                <MudNavLink Href="/logout" Icon="@Icons.Material.Filled.Logout">Выход</MudNavLink>
+
+            </MudNavMenu>
+        </MudPaper>
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    [Inject] public SignalClient SignalClient { get; set; } = null!;
+
+    bool _isDarkTheme = false;
+    bool _drawerOpen = false;
+    MudTheme mudTheme = new()
+        {
+            Palette = new Palette()
+            {
+                Primary = "#008C56",
+                Secondary = "#414981"
+            }
+        };
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+    protected override Task OnInitializedAsync()
+    => SignalClient.StartAsync();
+}

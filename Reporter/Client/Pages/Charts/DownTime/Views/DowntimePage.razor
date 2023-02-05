@@ -1,0 +1,15 @@
+﻿@using Reporter.Client.Components.Filter.Views
+@using Reporter.Client.Pages.Charts.DownTime.ViewModels;
+@using WebReporter.Client.Components.Filter.ViewModels;
+
+@page "/charts/downtime";
+@inherits DowntimeViewModel
+
+<MudStack>
+    <Filter Options="new FilterOptions(){IsDateEnabled = true}" Filter="Filter" ReloadData="ReloadDataAsync"></Filter>
+
+    <div style="width: 100%; max-height: 900px; padding: 20px; border: 1px solid #EFEFEF; margin-bottom: 20px; border-radius: 5px; cursor: pointer;">
+        <canvas class="chart" height="350" width="900" id="downtime-chart"></canvas>
+    </div>
+
+</MudStack>

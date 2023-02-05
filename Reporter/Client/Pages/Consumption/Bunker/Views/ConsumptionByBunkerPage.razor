@@ -1,0 +1,49 @@
+﻿@page "/consumption/bunker"
+@using Entities;
+@using Reporter.Client.Components.Filter.Views
+@using Reporter.Client.Pages.Consumption.Bunker.ViewModels;
+@using WebReporter.Client.Components.Filter.ViewModels;
+
+@inherits ConsumptionByBunkerViewModel;
+
+<MudStack>
+    <Filter ReloadData="ReloadServerDataAsync" Options="new BunkerConsumptionFilterOptions()" Filter="Filter"></Filter>
+    <MudGrid>
+        <MudItem xs="6">
+            <MudTable @ref="Table" LoadingProgressColor="Color.Secondary" Style="padding: 20px; border: 1px solid #EFEFEF; margin-bottom: 20px; cursor: pointer;" Context="context" Elevation="0" T="BunkerExpenditure" ServerData="ReloadExpendituresAsync" Hover="true" RowsPerPage="10" Virtualize="true" Bordered="false">
+                <HeaderContent>
+                    <MudTh>Дата</MudTh>
+                    <MudTh>Тип</MudTh>
+                    <MudTh>№ заявки</MudTh>
+                    <MudTh>№ замеса</MudTh>
+                    <MudTh>Расход</MudTh>
+                    <MudTh>Приход</MudTh>
+                    <MudTh>Остаток</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Дата">@context.Date</MudTd>
+                    <MudTd DataLabel="Тип">@context.Type</MudTd>
+                    <MudTd DataLabel="№ заявки">@context.ApplicationId</MudTd>
+                    <MudTd DataLabel="№ замеса">@context.BatchId</MudTd>
+                    <MudTd DataLabel="Расход">@context.Expenditures</MudTd>
+                    <MudTd DataLabel="Приход">@context.Load</MudTd>
+                    <MudTd DataLabel="Остаток">@context.Remains</MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager />
+                </PagerContent>
+            </MudTable>
+        </MudItem>
+
+
+        <MudItem xs="6">
+            <div style="width: 100%; max-width: 1000px; max-height: 900px; padding: 20px; border: 1px solid #EFEFEF; margin-bottom: 20px; border-radius: 5px; cursor: pointer;">
+                <canvas class="chart" height="350" width="900" id="expenditures-chart"></canvas>
+            </div>
+            <div style="width: 100%; max-width: 1000px; max-height: 900px; padding: 20px; border: 1px solid #EFEFEF; margin-bottom: 20px; border-radius: 5px; cursor: pointer;">
+                <canvas class="chart" height="350" width="900" id="remains-chart"></canvas>
+            </div>
+        </MudItem>
+
+    </MudGrid>
+</MudStack>

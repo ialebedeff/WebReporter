@@ -1,0 +1,13 @@
+﻿@using Entities;
+@using WebReporter.Client.Components.Filter.ViewModels;
+
+@inherits FilterViewModel
+
+<MudStack Row="true">
+    <MudDatePicker Variant="Variant.Outlined" Label="Дата начала" @bind-Date="Filter.StartTime" />
+    <MudDatePicker Variant="Variant.Outlined" Label="Дата окончания" @bind-Date="Filter.EndTime" />
+
+    
+
+
+</MudStack>

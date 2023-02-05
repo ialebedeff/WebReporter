@@ -1,0 +1,37 @@
+﻿@using SmartMixWebReporter.Client.Pages.Filter
+@using SmartMixWebReporter.Client.Pages.Loading
+@using SmartMixWebReporter.Client.Pages.Recipes.ViewModels;
+
+@page "/recipes";
+@inherits RecipesViewModel;
+
+<MudStack>
+    <FilterComponent @bind-EndTime="FilterData.EndTime" @bind-StartTime="FilterData.StartTime"></FilterComponent>
+
+    <MudGrid Style="border: .2px solid #E1E1E1; padding: 2%; border-radius: 8px; display: flex; position: relative; background: #FFF">
+        <MudStack Row="true">
+            <MudTable T="RecipeReport" Items="Reports" Dense="true" Hover="true" Elevation="0" RowsPerPage="10">
+                <HeaderContent>
+                    <MudTh>Рецепт</MudTh>
+                    <MudTh>Кол-во кубов</MudTh>
+                    <MudTh>Кол-во кубов по факту</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>@context.Recipe.Name</MudTd>
+                    <MudTd>@context.Applications.Sum(app => app.Volume)</MudTd>
+                    <MudTd>@context.Applications.Sum(app => app.VolumeFact)</MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager></MudTablePager>
+                </PagerContent>
+            </MudTable>
+            <MudStack Style="width: 65%;" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <Chart Width="600" Height="300" Config="ChartConfig"></Chart>
+            </MudStack>
+        </MudStack>
+    </MudGrid>
+</MudStack>
+
+@{
+
+}
